@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Disease Predictor</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">⚕️ AI Disease Predictor</h1>
+        <div id="input-container">
+            <textarea id="symptoms" placeholder="Enter symptoms..."></textarea>
+            <div class="button-group">
+                <button id="speech-btn" class="btn neon-btn">🎤 Speak</button>
+                <button id="predict-btn" class="btn neon-btn">🔍 Predict</button>
+                <select id="language-select" class="btn neon-btn">
+                    <div class="it">
+                        <option value="en-US">English</option>
+                        <option value="hi-IN">Hindi</option>
+                        <option value="es-ES">Spanish</option>
+                        <option value="fr-FR">French</option>
+                    </div>
+                </select>
+            </div>
+        </div>
+        <div id="output-container">
+            <h2>Predicted Disease:</h2>
+            <p id="disease"></p>
+            <h2>Confidence Level:</h2>
+            <p id="confidence"></p>
+            <h2>Possible Predictions:</h2>
+            <ul id="top-predictions"></ul>
+        </div>
+        <button id="toggle-voice-btn" class="btn neon-btn">🔊 Voice ON</button>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>
