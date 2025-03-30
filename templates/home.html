@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Pilot - AI Health Advisor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0.5rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            padding: 1rem 0;
+        }
+        
+        .title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: #2c3e50;
+            margin-bottom: 0.25rem;
+        }
+        
+        .subtitle {
+            font-size: 1rem;
+            color: #7f8c8d;
+            font-weight: 300;
+        }
+        
+        .options-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin: 1.5rem 0;
+        }
+        
+        .option-card {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            padding: 2rem;
+            width: 300px;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        
+        .option-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+        
+        .option-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.8rem;
+        }
+        
+        .option-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            margin-bottom: 0.8rem;
+            color: #2c3e50;
+        }
+        
+        .option-description {
+            color: #7f8c8d;
+            margin-bottom: 1.2rem;
+            font-size: 0.9rem;
+        }
+        
+        .option-btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 0.7rem 1.3rem;
+            border-radius: 50px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .option-btn:hover {
+            background-color: #2980b9;
+        }
+        
+        footer {
+            margin-top: auto;
+            text-align: center;
+            padding: 1rem 0;
+            color: #7f8c8d;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1 class="title">Health Pilot</h1>
+            <p class="subtitle">Advanced AI Health Diagnosis System</p>
+        </header>
+        
+        <div class="options-container">
+            <div class="option-card" onclick="window.location.href='/symptom_prediction'">
+                <div class="option-icon">🩺</div>
+                <h2 class="option-title">Symptom-Based Prediction</h2>
+                <p class="option-description">Describe your symptoms and get AI-powered disease predictions.</p>
+                <button class="option-btn">Get Started</button>
+            </div>
+            
+            <div class="option-card" onclick="window.location.href='/skin_disease'">
+                <div class="option-icon">🔬</div>
+                <h2 class="option-title">Skin Disease Classification</h2>
+                <p class="option-description">Upload images of skin conditions for AI analysis and diagnosis.</p>
+                <button class="option-btn">Get Started</button>
+            </div>
+            
+            <div class="option-card" onclick="window.location.href='/eye_disease'">
+                <div class="option-icon">👁️</div>
+                <h2 class="option-title">Eye Disease Classification</h2>
+                <p class="option-description">Upload eye images for AI-powered detection of eye conditions.</p>
+                <button class="option-btn">Get Started</button>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Health Pilot is for informational purposes only. Always consult a healthcare professional for medical advice.</p>
+        </footer>
+    </div>
+</body>
+</html>
