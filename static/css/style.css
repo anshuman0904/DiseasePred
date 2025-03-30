@@ -1,0 +1,256 @@
+/* Elegant Royal Theme CSS */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    background: linear-gradient(135deg, #f5f7fa 0%, #e8eaec 100%);
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    width: 100%;
+    max-width: 1000px;
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    position: relative;
+}
+
+/* Header Styling */
+header {
+    background: linear-gradient(135deg, #2c3e50, #4a69bd);
+    color: #fff;
+    padding: 30px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.title {
+    font-family: 'Playfair Display', serif;
+    font-size: 36px;
+    font-weight: 700;
+    margin-bottom: 5px;
+    letter-spacing: 1px;
+}
+
+.subtitle {
+    font-weight: 300;
+    font-size: 16px;
+    opacity: 0.9;
+}
+
+/* Content Layout */
+.content-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    padding: 30px;
+}
+
+@media (min-width: 768px) {
+    .content-wrapper {
+        flex-direction: row;
+    }
+    
+    .input-section, .results-section {
+        flex: 1;
+    }
+}
+
+/* Input Section */
+.input-section {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.input-section h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    color: #2c3e50;
+    margin-bottom: 5px;
+}
+
+#symptoms {
+    width: 100%;
+    height: 120px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 15px;
+    resize: none;
+    transition: border-color 0.3s;
+}
+
+#symptoms:focus {
+    outline: none;
+    border-color: #4a69bd;
+    box-shadow: 0 0 0 2px rgba(74, 105, 189, 0.2);
+}
+
+.controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+/* Buttons */
+.btn {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.primary-btn {
+    background-color: #4a69bd;
+    color: white;
+}
+
+.primary-btn:hover {
+    background-color: #3a559d;
+}
+
+.secondary-btn {
+    background-color: #f1f2f6;
+    color: #2c3e50;
+}
+
+.secondary-btn:hover {
+    background-color: #e5e7eb;
+}
+
+.action-btn {
+    background: linear-gradient(135deg, #4a69bd, #6a89cc);
+    color: white;
+    padding: 15px 25px;
+    font-size: 16px;
+    border-radius: 8px;
+    margin-top: 10px;
+    box-shadow: 0 4px 15px rgba(74, 105, 189, 0.3);
+}
+
+.action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(74, 105, 189, 0.4);
+}
+
+.icon {
+    margin-right: 8px;
+}
+
+/* Dropdown */
+.language-dropdown {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: white;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+    color: #2c3e50;
+    cursor: pointer;
+    outline: none;
+}
+
+/* Results Section */
+.results-section {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.result-card {
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.result-card h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    color: #2c3e50;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+.primary-result {
+    background: linear-gradient(135deg, #f8f9fa, #f1f2f6);
+    border-left: 4px solid #4a69bd;
+}
+
+.diagnosis {
+    text-align: center;
+    padding: 15px 0;
+}
+
+#disease {
+    font-size: 24px;
+    font-weight: 500;
+    color: #2c3e50;
+    margin-bottom: 10px;
+}
+
+.confidence-meter {
+    font-size: 14px;
+    color: #666;
+}
+
+#confidence {
+    font-weight: 500;
+    color: #4a69bd;
+}
+
+/* Predictions List */
+#top-predictions {
+    list-style: none;
+}
+
+#top-predictions li {
+    padding: 12px 15px;
+    margin-bottom: 8px;
+    background-color: white;
+    border-radius: 6px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s;
+    border-left: 3px solid #6a89cc;
+}
+
+#top-predictions li:hover {
+    transform: translateX(5px);
+}
+
+.placeholder {
+    color: #999;
+    font-style: italic;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 15px;
+    background-color: #f8f9fa;
+    color: #777;
+    font-size: 12px;
+    border-top: 1px solid #eee;
+}
