@@ -1,62 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Skin Disease Classification - Health Pilot</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
-</head>
-<body>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/skin_disease_style.css') }}"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
     <div class="container">
-        <header>
-            <h1 class="title">Health Pilot</h1>
-            <p class="subtitle">Skin Disease Classification</p>
-            <a href="/" class="back-link">← Back to Home</a>
-        </header>
-        
-        <div class="content-wrapper">
-            <div class="input-section">
-                <h2>Upload Skin Image</h2>
-                <div class="upload-area" id="upload-area">
-                    <input type="file" id="image-upload" accept="image/*" hidden>
-                    <div class="upload-content">
-                        <span class="icon">📷</span>
-                        <p>Drag & Drop your image here or</p>
-                        <button class="btn primary-btn" id="upload-btn">Choose File</button>
-                    </div>
-                </div>
-                <div class="preview-section" style="display: none;">
-					<img id="preview-img" src="" alt="Preview">
-				</div>				
-                <button id="analyze-btn" class="btn action-btn">Analyze Image</button>
+      <header>
+        <h1 class="title">Health Pilot</h1>
+        <p class="subtitle">Skin Disease Classification</p>
+        <a href="/" class="back-home">← Back to Home</a>
+      </header>
+
+      <div class="content-wrapper">
+        <div class="input-section">
+          <h2>Upload Skin Image</h2>
+          <div class="upload-area" id="upload-area">
+            <input type="file" id="image-upload" accept="image/*" hidden />
+            <div class="upload-content">
+              <span class="icon">📷</span>
+              <p>Drag & Drop your image here or</p>
+              <button class="btn primary-btn" id="upload-btn">
+                Choose File
+              </button>
             </div>
-            
-            <div class="results-section">
-                <div class="result-card primary-result">
-                    <h2>Primary Diagnosis</h2>
-                    <div class="diagnosis">
-                        <p id="disease">Awaiting analysis...</p>
-                        <div class="confidence-meter">
-                            <span>Confidence: </span>
-                            <span id="confidence">-</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="result-card secondary-results">
-                    <h2>Alternative Possibilities</h2>
-                    <ul id="top-predictions">
-                        <li class="placeholder">Please analyze image first</li>
-                    </ul>
-                </div>
-            </div>
+          </div>
+          <div class="preview-section" style="display: none">
+            <img id="preview-img" src="" alt="Preview" />
+          </div>
+          <button id="analyze-btn" class="btn action-btn">Analyze Image</button>
         </div>
-        
-        <footer>
-            <p>Consult a dermatologist for professional medical advice</p>
-        </footer>
+
+        <div class="results-section">
+          <div class="result-card primary-result">
+            <h2>Primary Diagnosis</h2>
+            <div class="diagnosis">
+              <p id="disease">Awaiting analysis...</p>
+              <div class="confidence-meter">
+                <span>Confidence: </span>
+                <span id="confidence">-</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="result-card secondary-results">
+            <h2>Alternative Possibilities</h2>
+            <ul id="top-predictions">
+              <li class="placeholder">Please analyze image first</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <p>Consult a dermatologist for professional medical advice</p>
+      </footer>
     </div>
     <script src="{{ url_for('static', filename='js/skin_disease.js') }}"></script>
-</body>
+  </body>
 </html>

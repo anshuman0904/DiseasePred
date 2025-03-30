@@ -1,3 +1,10 @@
+:root {
+  --primary-color: #3a0ca3;
+  --secondary-color: #4361ee;
+  --text-color: #2b2d42;
+  --bg-color: #f8f9fa;
+  --accent-color: #7209b7;
+}
 /* Elegant Royal Theme CSS */
 * {
   margin: 0;
@@ -38,6 +45,60 @@ body {
 .back-icon {
   margin-right: 6px;
   font-size: 18px;
+}
+
+.upload-content {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+}
+
+.upload-content p {
+  margin-right: 5px;
+  font-size: 15px;
+}
+
+#upload-btn {
+  margin-left: 5px;
+}
+
+.upload-area {
+  border: 2px dashed var(--secondary-color);
+  border-radius: 10px;
+  padding-top: 0.2rem;
+  padding-bottom: 1rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.upload-area:hover {
+  background-color: rgba(67, 97, 238, 0.05);
+}
+
+.btn {
+  background-color: var(--secondary-color);
+  color: white;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 50px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-top: 1rem;
+}
+
+.btn:hover {
+  background-color: var(--primary-color);
+}
+
+.preview-section img {
+  max-width: 100%;
+  max-height: 300px;
+  border-radius: 10px;
+  margin-top: 1rem;
 }
 
 .container {
@@ -183,71 +244,7 @@ header {
   margin-right: 8px;
 }
 
-/* Voice Input Button Styles */
-#speech-btn {
-  position: relative;
-  min-width: 140px;
-  transition: all 0.3s ease;
-}
-
-#speech-btn.listening {
-  background-color: #e74c3c;
-  box-shadow: 0 0 10px rgba(231, 76, 60, 0.4);
-}
-
-#speech-btn.listening:hover {
-  background-color: #c0392b;
-}
-
-.listening-indicator {
-  display: none;
-  align-items: center;
-  margin-left: 8px;
-}
-
-#speech-btn.listening .listening-indicator {
-  display: flex;
-}
-
-#speech-btn.listening .btn-text {
-  margin-right: 4px;
-}
-
-.dot {
-  height: 6px;
-  width: 6px;
-  margin: 0 2px;
-  background-color: white;
-  border-radius: 50%;
-  display: inline-block;
-  opacity: 0.7;
-}
-
-#speech-btn.listening .dot:nth-child(1) {
-  animation: pulse 1.5s infinite ease-in-out;
-}
-
-#speech-btn.listening .dot:nth-child(2) {
-  animation: pulse 1.5s infinite ease-in-out 0.3s;
-}
-
-#speech-btn.listening .dot:nth-child(3) {
-  animation: pulse 1.5s infinite ease-in-out 0.6s;
-}
-
-@keyframes pulse {
-  0%,
-  100% {
-    opacity: 0.4;
-    transform: scale(0.8);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.2);
-  }
-}
-
-/* Dropdown
+/* Dropdown */
 .language-dropdown {
   padding: 12px 15px;
   border: 1px solid #ddd;
@@ -258,47 +255,6 @@ header {
   color: #2c3e50;
   cursor: pointer;
   outline: none;
-} */
-
-.language-dropdown {
-  appearance: none; /* Remove default styling */
-  background-color: #ffffff; /* White background */
-  border: 2px solid #007bff; /* Blue border */
-  border-radius: 8px; /* Rounded corners */
-  padding: 10px 15px;
-  font-size: 16px;
-  font-weight: 500;
-  color: #333;
-  cursor: pointer;
-  outline: none;
-  transition: all 0.3s ease-in-out;
-}
-
-/* Add an arrow icon */
-.language-dropdown {
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23007bff'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 10px center;
-  background-size: 16px;
-  padding-right: 35px; /* Space for the arrow */
-}
-
-/* Hover effect */
-.language-dropdown:hover {
-  border-color: #0056b3;
-  background-color: #f8f9fa;
-}
-
-/* Focus effect */
-.language-dropdown:focus {
-  border-color: #0056b3;
-  box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
-}
-
-/* Style for dropdown options */
-.language-dropdown option {
-  font-size: 16px;
-  padding: 10px;
 }
 
 /* Results Section */
