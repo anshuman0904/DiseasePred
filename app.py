@@ -109,13 +109,13 @@ output_details = interpreter.get_output_details()
 
 # Mapping Indices to Classes
 classes = [
-    "akiec - Actinic Keratoses and Intraepithelial Carcinoma / Bowen's Disease",
-    "bcc - Basal Cell Carcinoma",
-    "bkl - Benign Keratosis-like Lesions",
-    "df - Dermatofibroma",
-    "mel - Melanoma",
-    "nv - Melanocytic Nevi (Common Mole)",
-    "vasc - Vascular Lesions"
+    "Actinic Keratoses and Intraepithelial Carcinoma / Bowen's Disease",
+    "Basal Cell Carcinoma",
+    "Benign Keratosis-like Lesions",
+    "Dermatofibroma",
+    "Melanoma",
+    "Melanocytic Nevi (Common Mole)",
+    "Vascular Lesions"
 ]
 
 def preprocess_image(image_file):

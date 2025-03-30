@@ -6,11 +6,6 @@
     <title>Skin Disease Classification - Health Pilot</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
-    <style>
-        .preview-section, .results-section {
-            display: none;
-        }
-    </style>
 </head>
 <body>
     <div class="container">
@@ -31,9 +26,9 @@
                         <button class="btn primary-btn" id="upload-btn">Choose File</button>
                     </div>
                 </div>
-                <div class="preview-section">
-                    <img id="preview-img" src="" alt="Preview">
-                </div>
+                <div class="preview-section" style="display: none;">
+					<img id="preview-img" src="" alt="Preview">
+				</div>				
                 <button id="analyze-btn" class="btn action-btn">Analyze Image</button>
             </div>
             

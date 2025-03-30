@@ -9,11 +9,12 @@ document.getElementById('image-upload').addEventListener('change', function(even
         reader.onload = function(e) {
             document.getElementById('preview-img').src = e.target.result;
             document.querySelector('.preview-section').style.display = 'block';
-            document.querySelector('.results-section').style.display = 'none';  // Hide results when uploading new image
+            // document.querySelector('.results-section').style.display = 'none';  // Hide results when uploading new image
         }
         reader.readAsDataURL(file);
     }
 });
+
 
 document.getElementById('analyze-btn').addEventListener('click', analyzeSkinCondition);
 
@@ -45,7 +46,7 @@ function analyzeSkinCondition() {
 }
 
 function displayResults(data) {
-    document.querySelector('.results-section').style.display = 'block';
+    // document.querySelector('.results-section').style.display = 'block';
     document.getElementById('disease').textContent = data.disease;
     document.getElementById('confidence').textContent = (data.confidence * 100).toFixed(2) + '%';
 
@@ -98,7 +99,7 @@ function handleFiles(files) {
         reader.onload = function(e) {
             document.getElementById('preview-img').src = e.target.result;
             document.querySelector('.preview-section').style.display = 'block';
-            document.querySelector('.results-section').style.display = 'none';
+            // document.querySelector('.results-section').style.display = 'block';
         }
         reader.readAsDataURL(file);
     }
