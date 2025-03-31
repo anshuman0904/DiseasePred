@@ -9,7 +9,6 @@ document.getElementById('image-upload').addEventListener('change', function(even
         reader.onload = function(e) {
             document.getElementById('preview-img').src = e.target.result;
             document.querySelector('.preview-section').style.display = 'block';
-            // document.querySelector('.results-section').style.display = 'none';  // Hide results when uploading new image
         }
         reader.readAsDataURL(file);
     }
@@ -38,9 +37,9 @@ function speakText(text, lang = "en-US") {
     }
 }
 
-document.getElementById('analyze-btn').addEventListener('click', analyzeSkinCondition);
+document.getElementById('analyze-btn').addEventListener('click', analyzeEyeCondition);
 
-function analyzeSkinCondition() {
+function analyzeEyeCondition() {
     const imageInput = document.getElementById('image-upload');
     if (!imageInput.files[0]) {
         alert('Please select an image first.');
@@ -56,7 +55,7 @@ function analyzeSkinCondition() {
     document.getElementById('top-predictions').innerHTML = 
         '<li class="placeholder">Processing your image...</li>';
 
-    fetch('/predict_skin', {
+    fetch('/predict_eye', {
         method: 'POST',
         body: formData
     })
@@ -70,7 +69,7 @@ function analyzeSkinCondition() {
         // Speak the result
         const diseaseText = data.disease || "Not Available";
         const confidenceText = `${(data.confidence * 100).toFixed(2)}%`;
-        speakText(`Skin analysis complete. Primary diagnosis is ${diseaseText}. Confidence level is ${confidenceText}`);
+        speakText(`Eye analysis complete. Primary diagnosis is ${diseaseText}. Confidence level is ${confidenceText}`);
     })
     .catch(error => {
         console.error('Error:', error);
@@ -83,7 +82,6 @@ function analyzeSkinCondition() {
 }
 
 function displayResults(data) {
-    // document.querySelector('.results-section').style.display = 'block';
     document.getElementById('disease').textContent = data.disease;
     document.getElementById('confidence').textContent = (data.confidence * 100).toFixed(2) + '%';
 
@@ -147,7 +145,6 @@ function handleFiles(files) {
         reader.onload = function(e) {
             document.getElementById('preview-img').src = e.target.result;
             document.querySelector('.preview-section').style.display = 'block';
-            // document.querySelector('.results-section').style.display = 'block';
         }
         reader.readAsDataURL(file);
     }

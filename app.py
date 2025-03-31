@@ -5,6 +5,11 @@ import tensorflow as tf
 import json
 from PIL import Image
 from sklearn.feature_extraction.text import TfidfVectorizer
+import torch
+from torch import nn
+from torchvision import transforms
+import io
+import base64
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS
@@ -191,19 +196,112 @@ def predict():
     prediction_result = predict_disease(model_helper, symptoms)
     return jsonify(prediction_result)
 
-# Dummy API for eye disease prediction
+
+class ImprovedTinyVGGModel(nn.Module):
+    def __init__(self, input_shape, hidden_units, output_shape):
+        super(ImprovedTinyVGGModel, self).__init__()
+        self.conv_block_1 = nn.Sequential(
+            nn.Conv2d(input_shape, hidden_units, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(),
+            nn.Conv2d(hidden_units, hidden_units, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(),
+            nn.MaxPool2d(2),
+            nn.BatchNorm2d(hidden_units),
+            nn.Dropout(0.2)
+        )
+        self.conv_block_2 = nn.Sequential(
+            nn.Conv2d(hidden_units, 4 * hidden_units, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(),
+            nn.Conv2d(4 * hidden_units, 4 * hidden_units, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(),
+            nn.MaxPool2d(2),
+            nn.BatchNorm2d(4 * hidden_units),
+        )
+        self.conv_block_3 = nn.Sequential(
+            nn.Conv2d(4 * hidden_units, 4 * hidden_units, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(),
+            nn.Conv2d(4 * hidden_units, 2 * hidden_units, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(),
+            nn.MaxPool2d(2),
+            nn.BatchNorm2d(2 * hidden_units),
+            nn.Dropout(0.2)
+        )
+        self.conv_block_4 = nn.Sequential(
+            nn.Conv2d(2 * hidden_units, hidden_units, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(),
+            nn.Conv2d(hidden_units, output_shape, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(),
+            nn.MaxPool2d(2),
+            nn.BatchNorm2d(output_shape),
+        )
+        self.classifier = nn.Sequential(
+            nn.Flatten(),
+            nn.Linear(1176, hidden_units),
+            nn.ReLU(),
+            nn.Dropout(0.5),
+            nn.Linear(hidden_units, output_shape)
+        )
+
+    def forward(self, x):
+        x = self.conv_block_1(x)
+        x = self.conv_block_2(x)
+        x = self.conv_block_3(x)
+        x = self.conv_block_4(x)
+        x = self.classifier(x)
+        return x
+
+# Load your trained model
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+loaded_model = ImprovedTinyVGGModel(3, 48, 6).to(device)
+loaded_model.load_state_dict(torch.load("MultipleEyeDiseaseDetectModel.pth", map_location=device))
+loaded_model.eval()
+
+# Define the image transformation
+transform = transforms.Compose([
+    transforms.Resize((224, 224)),  # Match your model's expected input size
+    transforms.ToTensor(),
+])
+
+# Function to predict eye disease
+def predict_eye_disease(image):
+    image_tensor = transform(image).unsqueeze(0).to(device)
+
+    with torch.no_grad():
+        output = loaded_model(image_tensor)
+        probabilities = torch.softmax(output, dim=1).cpu().numpy().flatten()
+
+    class_names = ['AMD', 'Cataract', 'Glaucoma', 'Myopia', 'Non-Eye', 'Normal']
+    predicted_class = class_names[np.argmax(probabilities)]
+
+    top_predictions = []
+    for i in np.argsort(probabilities)[-3:][::-1]:
+        top_predictions.append({
+            'disease': class_names[i],
+            'confidence': float(probabilities[i])
+        })
+
+    return predicted_class, top_predictions
+
 @app.route('/predict_eye', methods=['POST'])
 def predict_eye():
-    # Dummy response for now
-    return jsonify({
-        'disease': 'Cataract',
-        'confidence': 0.92,
-        'topPredictions': [
-            {'disease': 'Cataract', 'confidence': 0.92},
-            {'disease': 'Glaucoma', 'confidence': 0.06},
-            {'disease': 'Diabetic Retinopathy', 'confidence': 0.02}
-        ]
-    })
+    if 'image' not in request.files:
+        return jsonify({'error': 'No image file provided'}), 400
+
+    image_file = request.files['image']
+    
+    try:
+        image = Image.open(image_file).convert("RGB")
+        predicted_class, top_predictions = predict_eye_disease(image)
+        
+        return jsonify({
+            'disease': predicted_class,
+            'confidence': top_predictions[0]['confidence'],
+            'topPredictions': top_predictions
+        })
+    
+    except Exception as e:
+        app.logger.error(f"Error in predict_eye: {str(e)}", exc_info=True)
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
