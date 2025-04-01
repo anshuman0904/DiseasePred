@@ -10,99 +10,17 @@ from torch import nn
 from torchvision import transforms
 import io
 import base64
+import nltk
+from nltk.corpus import stopwords
+from nltk.tokenize import word_tokenize
+import string
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS
 
-class TFLiteModelHelper:
-    def __init__(self, model_path, vocab_path, labels_path):
-        # Load TFLite model
-        self.interpreter = tf.lite.Interpreter(model_path=model_path)
-        self.interpreter.allocate_tensors()
-        
-        # Get input and output tensors
-        self.input_details = self.interpreter.get_input_details()
-        self.output_details = self.interpreter.get_output_details()
-        
-        # Load vocabulary and initialize TF-IDF vectorizer
-        with open(vocab_path, 'r') as f:
-            self.vocab_dict = json.load(f)
-        
-        # Load labels
-        with open(labels_path, 'r') as f:
-            self.labels = json.load(f)
-            
-        # Create and fit the vectorizer
-        self.vectorizer = self._create_fitted_vectorizer()
-    
-    def _create_fitted_vectorizer(self):
-        """Create and fit a TfidfVectorizer with the loaded vocabulary"""
-        vectorizer = TfidfVectorizer(vocabulary=self.vocab_dict)
-        # Fit with a dummy document containing at least one term from vocabulary
-        # This is just to mark the vectorizer as fitted
-        dummy_text = " ".join(list(self.vocab_dict.keys())[:20])  # Use first 20 words from vocab
-        vectorizer.fit([dummy_text])
-        return vectorizer
-
-    def vectorize_text(self, text):
-        """Convert text to TF-IDF vector"""
-        preprocessed_text = text.lower()
-        return self.vectorizer.transform([preprocessed_text]).toarray().astype(np.float32)
-        
-    def predict(self, input_data):
-        """Run inference with TFLite model"""
-        # Set the input tensor
-        self.interpreter.set_tensor(self.input_details[0]['index'], input_data)
-        
-        # Run inference
-        self.interpreter.invoke()
-        
-        # Get the output tensor
-        output_data = self.interpreter.get_tensor(self.output_details[0]['index'])
-        return output_data
-
-def predict_disease(model_helper, symptoms):
-    try:
-        # Vectorize input text
-        input_vector = model_helper.vectorize_text(symptoms)
-        
-        # Run prediction with TFLite
-        output = model_helper.predict(input_vector)
-        
-        # Process results
-        max_index = int(np.argmax(output[0]))
-        max_value = float(output[0][max_index])
-        
-        probabilities = output[0].tolist()
-        top_predictions = []
-        
-        for _ in range(3):
-            max_idx = np.argmax(probabilities)
-            confidence = probabilities[max_idx]
-            
-            if confidence > 0 and max_idx < len(model_helper.labels):
-                top_predictions.append({
-                    'disease': model_helper.labels[max_idx],
-                    'confidence': confidence,
-                })
-            probabilities[max_idx] = -1
-            
-        return {
-            'disease': model_helper.labels[max_index],
-            'confidence': max_value,
-            'topPredictions': top_predictions,
-        }
-        
-    except Exception as e:
-        print(f'Error during prediction: {e}')
-        raise
-
-# Initialize the TFLite ModelHelper
-model_helper = TFLiteModelHelper(
-    model_path="text_model.tflite",
-    vocab_path="tfidf_vocab.json",
-    labels_path="labels.json"
-)
+nltk.download('punkt')
+nltk.download('punkt_tab')
+nltk.download('stopwords')
 
 # Load the TFLite model
 interpreter = tf.lite.Interpreter(model_path="best_vit_xception.tflite")
@@ -188,6 +106,85 @@ def predict_skin():
 def eye_disease():
     return render_template('eye_disease.html')
 
+class ModelHelper:
+    def __init__(self, model_path, vectorizer_path, label_encoder_path):
+        # Load TFLite model
+        self.interpreter = tf.lite.Interpreter(model_path=model_path)
+        self.interpreter.allocate_tensors()
+
+        # Load vectorizer vocabulary from JSON
+        with open(vectorizer_path, 'r') as file:
+            self.vectorizer_vocab = json.load(file)
+
+        # Load label encoder from JSON
+        with open(label_encoder_path, 'r') as file:
+            self.labels = json.load(file)
+
+        # Store input-output details for TFLite model
+        self.input_index = self.interpreter.get_input_details()[0]['index']
+        self.output_index = self.interpreter.get_output_details()[0]['index']
+
+        # Prepare stop words
+        self.stop_words = set(stopwords.words('english'))
+
+    def preprocess_text(self, text):
+        text = text.lower()
+        words = word_tokenize(text)
+        filtered_words = [word for word in words if word not in self.stop_words and word not in string.punctuation]
+        preprocessed_text = " ".join(filtered_words)
+        return preprocessed_text
+
+    def vectorize_text(self, text):
+        preprocessed_text = self.preprocess_text(text)
+        words = preprocessed_text.split()
+        vector = np.zeros(len(self.vectorizer_vocab), dtype=np.float32)
+
+        for word in words:
+            if word in self.vectorizer_vocab:
+                vector[self.vectorizer_vocab[word]] = 1.0  
+
+        return vector.reshape(1, -1)
+
+def predict_disease(model_helper, symptoms):
+    try:
+        input_vector = model_helper.vectorize_text(symptoms)
+        input_tensor = tf.convert_to_tensor(input_vector, dtype=tf.float32)
+        model_helper.interpreter.set_tensor(model_helper.input_index, input_tensor)
+        model_helper.interpreter.invoke()
+        output = model_helper.interpreter.get_tensor(model_helper.output_index)[0]
+
+        max_index = int(np.argmax(output))
+        max_value = float(output[max_index])
+
+        probabilities = output.tolist()
+        top_predictions = []
+
+        for _ in range(3):
+            max_idx = np.argmax(probabilities)
+            confidence = probabilities[max_idx]
+
+            if confidence > 0 and str(max_idx) in model_helper.labels:
+                top_predictions.append({
+                    'disease': model_helper.labels[str(max_idx)],
+                    'confidence': confidence,
+                })
+                probabilities[max_idx] = -1
+
+        return {
+            'disease': model_helper.labels[str(max_index)],
+            'confidence': max_value,
+            'topPredictions': top_predictions,
+        }
+    except Exception as e:
+        print(f'Error during prediction: {e}')
+        raise
+
+model_helper = ModelHelper(
+    model_path="text_model.tflite",
+    vectorizer_path="tfidf_vocab.json",
+    label_encoder_path="labels.json"
+)
+
 # Prediction API endpoint
 @app.route('/predict', methods=['POST'])
 def predict():
@@ -195,7 +192,6 @@ def predict():
     symptoms = data.get('symptoms', '')
     prediction_result = predict_disease(model_helper, symptoms)
     return jsonify(prediction_result)
-
 
 class ImprovedTinyVGGModel(nn.Module):
     def __init__(self, input_shape, hidden_units, output_shape):
