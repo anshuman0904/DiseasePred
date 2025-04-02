@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lung Cancer Risk Assessment | Premium Health Services</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/lung_cancer.css') }}"/>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="back-home">← Back to Home</a>
+        <div class="logo-container">
+            <div class="logo">HP</div>
+        </div>
+        <h1>Lung Cancer Risk Assessment</h1>
+        <p class="tagline">Personalized healthcare excellence</p>
+        
+        <form id="predictionForm">
+            <div class="form-group">
+                <label for="age">Age <span class="description">(in years)</span></label>
+                <input type="number" id="age" name="age" required>
+            </div>
+
+            <div class="form-group">
+                <label>Gender <span class="description">(biological sex)</span></label>
+                <div class="radio-group">
+                    <div class="radio-option">
+                        <input type="radio" id="gender-male" name="gender" value="1" required>
+                        <label for="gender-male" class="radio-label">Male</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="gender-female" name="gender" value="0">
+                        <label for="gender-female" class="radio-label">Female</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Do you smoke or have a history of smoking?</label>
+                <div class="radio-group">
+                    <div class="radio-option">
+                        <input type="radio" id="smoking-yes" name="smoking" value="1" required>
+                        <label for="smoking-yes" class="radio-label">Yes</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="smoking-no" name="smoking" value="0">
+                        <label for="smoking-no" class="radio-label">No</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Have you noticed yellowing of fingers?</label>
+                <div class="radio-group">
+                    <div class="radio-option">
+                        <input type="radio" id="yellow-fingers-yes" name="yellow_fingers" value="1" required>
+                        <label for="yellow-fingers-yes" class="radio-label">Yes</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="yellow-fingers-no" name="yellow_fingers" value="0">
+                        <label for="yellow-fingers-no" class="radio-label">No</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Do you experience frequent anxiety?</label>
+                <div class="radio-group">
+                    <div class="radio-option">
+                        <input type="radio" id="anxiety-yes" name="anxiety" value="1" required>
+                        <label for="anxiety-yes" class="radio-label">Yes</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="anxiety-no" name="anxiety" value="0">
+                        <label for="anxiety-no" class="radio-label">No</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Do you feel influenced by peer pressure regarding smoking?</label>
+                <div class="radio-group">
+                    <div class="radio-option">
+                        <input type="radio" id="peer-pressure-yes" name="peer_pressure" value="1" required>
+                        <label for="peer-pressure-yes" class="radio-label">Yes</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="peer-pressure-no" name="peer_pressure" value="0">
+                        <label for="peer-pressure-no" class="radio-label">No</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Do you have any chronic diseases?</label>
+                <div class="radio-group">
+                    <div class="radio-option">
+                        <input type="radio" id="chronic-disease-yes" name="chronic_disease" value="1" required>
+                        <label for="chronic-disease-yes" class="radio-label">Yes</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="chronic-disease-no" name="chronic_disease" value="0">
+                        <label for="chronic-disease-no" class="radio-label">No</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Do you experience persistent fatigue?</label>
+                <div class="radio-group">
+                    <div class="radio-option">
+                        <input type="radio" id="fatigue-yes" name="fatigue" value="1" required>
+                        <label for="fatigue-yes" class="radio-label">Yes</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="fatigue-no" name="fatigue" value="0">
+                        <label for="fatigue-no" class="radio-label">No</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Do you have any allergies?</label>
+                <div class="radio-group">
+                    <div class="radio-option">
+                        <input type="radio" id="allergy-yes" name="allergy" value="1" required>
+                        <label for="allergy-yes" class="radio-label">Yes</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="allergy-no" name="allergy" value="0">
+                        <label for="allergy-no" class="radio-label">No</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Do you experience wheezing?</label>
+                <div class="radio-group">
+                    <div class="radio-option">
+                        <input type="radio" id="wheezing-yes" name="wheezing" value="1" required>
+                        <label for="wheezing-yes" class="radio-label">Yes</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="wheezing-no" name="wheezing" value="0">
+                        <label for="wheezing-no" class="radio-label">No</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Do you consume alcohol regularly?</label>
+                <div class="radio-group">
+                    <div class="radio-option">
+                        <input type="radio" id="alcohol-yes" name="alcohol_consuming" value="1" required>
+                        <label for="alcohol-yes" class="radio-label">Yes</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="alcohol-no" name="alcohol_consuming" value="0">
+                        <label for="alcohol-no" class="radio-label">No</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Do you have persistent coughing?</label>
+                <div class="radio-group">
+                    <div class="radio-option">
+                        <input type="radio" id="coughing-yes" name="coughing" value="1" required>
+                        <label for="coughing-yes" class="radio-label">Yes</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="coughing-no" name="coughing" value="0">
+                        <label for="coughing-no" class="radio-label">No</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Do you experience shortness of breath?</label>
+                <div class="radio-group">
+                    <div class="radio-option">
+                        <input type="radio" id="shortness-breath-yes" name="shortness_of_breath" value="1" required>
+                        <label for="shortness-breath-yes" class="radio-label">Yes</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="shortness-breath-no" name="shortness_of_breath" value="0">
+                        <label for="shortness-breath-no" class="radio-label">No</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Do you have difficulty swallowing?</label>
+                <div class="radio-group">
+                    <div class="radio-option">
+                        <input type="radio" id="swallowing-yes" name="swallowing_difficulty" value="1" required>
+                        <label for="swallowing-yes" class="radio-label">Yes</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="swallowing-no" name="swallowing_difficulty" value="0">
+                        <label for="swallowing-no" class="radio-label">No</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Do you experience chest pain?</label>
+                <div class="radio-group">
+                    <div class="radio-option">
+                        <input type="radio" id="chest-pain-yes" name="chest_pain" value="1" required>
+                        <label for="chest-pain-yes" class="radio-label">Yes</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="chest-pain-no" name="chest_pain" value="0">
+                        <label for="chest-pain-no" class="radio-label">No</label>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit">Analyze Risk Profile</button>
+        </form>
+
+        <div class="footer">
+            <p>Health Pilot</p>
+            <p>Consult a healthcare professional for medical advice.</p>
+        </div>
+    </div>
+
+    <!-- Result Modal -->
+    <div id="resultModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            
+            <div class="result-header">
+                <h2>Your Lung Cancer Risk Assessment</h2>
+                <div class="date" id="resultDate"></div>
+            </div>
+            
+            <div class="result-content">
+                <div class="result-indicator" id="riskIndicator">
+                    <div class="indicator-value" id="riskValue"></div>
+                </div>
+                
+                <div class="result-description" id="resultDescription"></div>
+                
+                <div class="recommendation">
+                    <h3>Personalized Recommendations</h3>
+                    <ul id="recommendationList"></ul>
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <button id="downloadBtn" class="btn secondary-btn">Download Report</button>
+                <button id="newAssessmentBtn" class="btn primary-btn">New Assessment</button>
+            </div>
+            
+            <div class="disclaimer">
+                <p>This assessment is for informational purposes only and does not constitute medical advice. Always consult with qualified healthcare providers for diagnosis and treatment.</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/lung_cancer.js') }}"></script>
+</body>
+</html>

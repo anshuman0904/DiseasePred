@@ -371,3 +371,45 @@ button:hover {
     color: #718096;
     line-height: 1.5;
 }
+
+/* Additional styles for long form */
+.form-group:last-of-type {
+    margin-bottom: 30px;
+}
+
+/* Make the form more scroll-friendly on mobile */
+@media (max-width: 768px) {
+    .container {
+        padding: 30px 20px;
+    }
+    
+    .form-group {
+        margin-bottom: 20px;
+    }
+    
+    .radio-group {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .radio-option {
+        width: 100%;
+    }
+    
+    .modal-content {
+        margin: 5% 15px;
+        padding: 20px;
+    }
+    
+    .result-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 15px 20px;
+        margin: -20px -20px 20px -20px;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+    }
+}

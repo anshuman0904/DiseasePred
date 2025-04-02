@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 import numpy as np
+import pandas as pd
 import tensorflow as tf
 import json
 from PIL import Image
@@ -32,6 +33,7 @@ input_details = interpreter.get_input_details()
 output_details = interpreter.get_output_details()
 
 diabetes_model = joblib.load('diabetes_rf_model.pkl')
+lungModel = joblib.load('lungs_randomForest.pkl')
 
 # Mapping Indices to Classes
 classes = [
@@ -342,6 +344,54 @@ def predict_diabetes():
 @app.route('/diabetes', methods=['GET'])
 def diabetes():
     return render_template('diabetes.html')
+
+@app.route('/predict_lungs', methods=['POST'])
+def predict_lungs():
+    try:
+        # Get the JSON data from the request
+        data = request.json
+
+        # Map keys to the names expected by the model
+        renamed_data = {
+            'gender': data['gender'],
+            'age': data['age'],
+            'smoking': data['smoking'],
+            'yellow_fingers': data['yellow_fingers'],
+            'anxiety': data['anxiety'],
+            'peer_pressure': data['peer_pressure'],
+            'chronic disease': data['chronic_disease'],
+            'fatigue': data['fatigue'],
+            'allergy': data['allergy'],
+            'wheezing': data['wheezing'],
+            'alcohol consuming': data['alcohol_consuming'],
+            'coughing': data['coughing'],
+            'shortness of breath': data['shortness_of_breath'],
+            'swallowing difficulty': data['swallowing_difficulty'],
+            'chest pain': data['chest_pain']
+        }
+
+        # Extract features from the renamed data
+        features = [int(renamed_data[key]) for key in renamed_data]
+
+        # Convert the features to a DataFrame
+        columns = list(renamed_data.keys())
+        input_data = pd.DataFrame([features], columns=columns)
+
+        # Make prediction
+        prediction = lungModel.predict(input_data)[0]
+        prediction_label = 'YES' if prediction == 1 else 'NO'
+        print(prediction_label)
+
+        # Return the prediction as JSON
+        return jsonify({'prediction': prediction_label})
+
+    except Exception as e:
+        print("error: " + str(e))
+        return jsonify({'error': str(e)}), 400
+
+@app.route('/lungs', methods=['GET'])
+def lungs():
+    return render_template('lungs.html')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
