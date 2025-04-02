@@ -14,6 +14,7 @@ import nltk
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 import string
+import joblib
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS
@@ -29,6 +30,8 @@ interpreter.allocate_tensors()
 # Get input and output details
 input_details = interpreter.get_input_details()
 output_details = interpreter.get_output_details()
+
+diabetes_model = joblib.load('diabetes_rf_model.pkl')
 
 # Mapping Indices to Classes
 classes = [
@@ -298,6 +301,47 @@ def predict_eye():
     except Exception as e:
         app.logger.error(f"Error in predict_eye: {str(e)}", exc_info=True)
         return jsonify({'error': str(e)}), 500
+
+@app.route('/predict_diabetes', methods=['POST'])
+def predict_diabetes():
+    try:
+        # Retrieve data from form
+        data = [
+            int(request.form['Age']),
+            int(request.form['Gender']),  # 1 for Male, 0 for Female
+            int(request.form['Polyuria']),
+            int(request.form['Polydipsia']),
+            int(request.form['Sudden_weight_loss']),
+            int(request.form['Weakness']),
+            int(request.form['Polyphagia']),
+            int(request.form['Genital_thrush']),
+            int(request.form['Visual_blurring']),
+            int(request.form['Itching']),
+            int(request.form['Irritability']),
+            int(request.form['Delayed_healing']),
+            int(request.form['Partial_paresis']),
+            int(request.form['Muscle_stiffness']),
+            int(request.form['Alopecia']),
+            int(request.form['Obesity'])
+        ]
+
+        # Convert data to NumPy array
+        custom_case = np.array([data])
+
+        # Make prediction
+        prediction = diabetes_model.predict(custom_case)
+        prediction_label = 'Positive' if prediction[0] == 1 else 'Negative'
+        print(prediction_label)
+
+        # Return result
+        return jsonify({"prediction": prediction_label})
+
+    except Exception as e:
+        return jsonify({"error": str(e)})
+
+@app.route('/diabetes', methods=['GET'])
+def diabetes():
+    return render_template('diabetes.html')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
