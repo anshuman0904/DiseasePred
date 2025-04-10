@@ -22,7 +22,7 @@
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0.5rem;
+            padding: 0.2rem;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -30,15 +30,15 @@
         
         header {
             text-align: center;
-            margin-bottom: 1.5rem;
-            padding: 1rem 0;
+            margin-bottom: 5px;
+            padding: 5px;
         }
         
         .title {
             font-family: 'Playfair Display', serif;
             font-size: 2.5rem;
             color: #2c3e50;
-            margin-bottom: 0.25rem;
+            margin-bottom: 0.15rem;
         }
         
         .subtitle {
@@ -59,7 +59,7 @@
             background-color: white;
             border-radius: 12px;
             box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-            padding: 2rem;
+            padding: 1.2rem;
             width: 300px;
             text-align: center;
             transition: transform 0.3s, box-shadow 0.3s;
@@ -108,15 +108,15 @@
             margin-top: auto;
             text-align: center;
             padding: 1rem 0;
-            color: #7f8c8d;
-            font-size: 0.8rem;
+            color: red;
+            font-size: 1rem;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1 class="title">Health Pilot</h1>
+            <h1 class="title">HealthPilot</h1>
             <p class="subtitle">Advanced AI Health Diagnosis System</p>
         </header>
         
@@ -128,33 +128,33 @@
                 <button class="option-btn">Get Started</button>
             </div>
             
-            <div class="option-card" onclick="window.location.href='/skin_disease'">
-                <div class="option-icon">🔬</div>
-                <h2 class="option-title">Skin Disease Classification</h2>
-                <p class="option-description">Upload images of skin conditions for AI analysis and diagnosis.</p>
-                <button class="option-btn">Get Started</button>
-            </div>
-            
-            <div class="option-card" onclick="window.location.href='/eye_disease'">
-                <div class="option-icon">👁️</div>
-                <h2 class="option-title">Eye Disease Classification</h2>
-                <p class="option-description">Upload eye images for AI-powered detection of eye conditions.</p>
-                <button class="option-btn">Get Started</button>
-            </div>
-            
             <div class="option-card" onclick="window.location.href='/diabetes'">
                 <div class="option-icon">🩸</div>
                 <h2 class="option-title">Diabetes Risk Assessment</h2>
                 <p class="option-description">Evaluate your risk factors and get recommendations.</p>
                 <button class="option-btn">Get Started</button>
             </div>
-            
+
             <div class="option-card" onclick="window.location.href='/lungs'">
                 <div class="option-icon">🫁</div>
                 <h2 class="option-title">Lung Cancer Risk Assessment</h2>
                 <p class="option-description">Evaluate your lung cancer risk factors.</p>
                 <button class="option-btn">Get Started</button>
             </div>
+                        
+            <div class="option-card" onclick="window.location.href='/skin_disease'">
+                <div class="option-icon">🔬</div>
+                <h2 class="option-title">Skin Disease Classification</h2>
+                <p class="option-description">Upload images of skin conditions for AI analysis and diagnosis.</p>
+                <button class="option-btn">Get Started</button>
+            </div>
+
+            <div class="option-card" onclick="window.location.href='/eye_disease'">
+                <div class="option-icon">👁️</div>
+                <h2 class="option-title">Eye Disease Classification</h2>
+                <p class="option-description">Upload eye images for AI-powered detection of eye conditions.</p>
+                <button class="option-btn">Get Started</button>
+            </div>            
         </div>
         
         <footer>
