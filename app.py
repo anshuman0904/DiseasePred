@@ -18,99 +18,19 @@ import string
 import joblib
 
 app = Flask(__name__)
-CORS(app)  # Enable CORS
+CORS(app)
 
 nltk.download('punkt')
 nltk.download('punkt_tab')
 nltk.download('stopwords')
-
-# Load the TFLite model
-interpreter = tf.lite.Interpreter(model_path="best_vit_xception.tflite")
-interpreter.allocate_tensors()
-
-# Get input and output details
-input_details = interpreter.get_input_details()
-output_details = interpreter.get_output_details()
-
-diabetes_model = joblib.load('diabetes_rf_model.pkl')
-lungModel = joblib.load('lungs_randomForest.pkl')
-
-# Mapping Indices to Classes
-classes = [
-    "Actinic Keratoses and Intraepithelial Carcinoma / Bowen's Disease",
-    "Basal Cell Carcinoma",
-    "Benign Keratosis-like Lesions",
-    "Dermatofibroma",
-    "Melanoma",
-    "Melanocytic Nevi (Common Mole)",
-    "Vascular Lesions"
-]
-
-def preprocess_image(image_file):
-    img = Image.open(image_file).resize((72, 72))
-    img_array = np.array(img) / 255.0  # Normalize to [0, 1]
-    img_array = np.expand_dims(img_array, axis=0).astype(np.float32)
-    return img_array
 
 # Home Route - Renders the new home page
 @app.route('/', methods=['GET'])
 def home():
     return render_template('home.html')
 
-# Symptom-based prediction route
-@app.route('/symptom_prediction', methods=['GET'])
-def symptom_prediction():
-    return render_template('symptom_prediction.html')
-
-# Skin disease classification route
-@app.route('/skin_disease', methods=['GET'])
-def skin_disease():
-    return render_template('skin_disease.html')
-
-@app.route('/predict_skin', methods=['POST'])
-def predict_skin():
-    if 'image' not in request.files:
-        return jsonify({'error': 'No image file provided'}), 400
-
-    image_file = request.files['image']
-    
-    try:
-        input_data = preprocess_image(image_file)
-        
-        # Make predictions
-        interpreter.set_tensor(input_details[0]['index'], input_data)
-        interpreter.invoke()
-        
-        # Get prediction
-        output_data = interpreter.get_tensor(output_details[0]['index'])
-        predicted_index = np.argmax(output_data)
-        predicted_confidence = float(output_data[0][predicted_index])
-        
-        predicted_class = classes[predicted_index]
-        
-        # Get top 3 predictions
-        top_indices = np.argsort(output_data[0])[-3:][::-1]
-        top_predictions = [
-            {'disease': classes[i], 'confidence': float(output_data[0][i])}
-            for i in top_indices
-        ]
-        
-        return jsonify({
-            'disease': predicted_class,
-            'confidence': predicted_confidence,
-            'topPredictions': top_predictions
-        })
-    
-    except Exception as e:
-        app.logger.error(f"Error in predict_skin: {str(e)}", exc_info=True)
-        return jsonify({'error': str(e)}), 500
-
-
-# Eye disease classification route
-@app.route('/eye_disease', methods=['GET'])
-def eye_disease():
-    return render_template('eye_disease.html')
-
+##########################################################################3
+#SYMPTOM PREDICTION
 class ModelHelper:
     def __init__(self, model_path, vectorizer_path, label_encoder_path):
         # Load TFLite model
@@ -190,13 +110,188 @@ model_helper = ModelHelper(
     label_encoder_path="labels.json"
 )
 
-# Prediction API endpoint
 @app.route('/predict', methods=['POST'])
 def predict():
     data = request.json
     symptoms = data.get('symptoms', '')
     prediction_result = predict_disease(model_helper, symptoms)
     return jsonify(prediction_result)
+
+# Symptom-based prediction route
+@app.route('/symptom_prediction', methods=['GET'])
+def symptom_prediction():
+    return render_template('symptom_prediction.html')
+
+#######################################################################33
+# DIABETES ASSESSMENT
+
+diabetes_model = joblib.load('diabetes_rf_model.pkl')
+
+@app.route('/predict_diabetes', methods=['POST'])
+def predict_diabetes():
+    try:
+        # Retrieve data from form
+        data = [
+            int(request.form['Age']),
+            int(request.form['Gender']),  # 1 for Male, 0 for Female
+            int(request.form['Polyuria']),
+            int(request.form['Polydipsia']),
+            int(request.form['Sudden_weight_loss']),
+            int(request.form['Weakness']),
+            int(request.form['Polyphagia']),
+            int(request.form['Genital_thrush']),
+            int(request.form['Visual_blurring']),
+            int(request.form['Itching']),
+            int(request.form['Irritability']),
+            int(request.form['Delayed_healing']),
+            int(request.form['Partial_paresis']),
+            int(request.form['Muscle_stiffness']),
+            int(request.form['Alopecia']),
+            int(request.form['Obesity'])
+        ]
+
+        # Convert data to NumPy array
+        custom_case = np.array([data])
+
+        # Make prediction
+        prediction = diabetes_model.predict(custom_case)
+        prediction_label = 'Positive' if prediction[0] == 1 else 'Negative'
+        print(prediction_label)
+
+        # Return result
+        return jsonify({"prediction": prediction_label})
+
+    except Exception as e:
+        return jsonify({"error": str(e)})
+
+@app.route('/diabetes', methods=['GET'])
+def diabetes():
+    return render_template('diabetes.html')
+
+#######################################################################33
+# LUNG CANCER ASSESSMENT
+
+lungModel = joblib.load('lungs_randomForest.pkl')
+
+@app.route('/predict_lungs', methods=['POST'])
+def predict_lungs():
+    try:
+        # Get the JSON data from the request
+        data = request.json
+
+        # Map keys to the names expected by the model
+        renamed_data = {
+            'gender': data['gender'],
+            'age': data['age'],
+            'smoking': data['smoking'],
+            'yellow_fingers': data['yellow_fingers'],
+            'anxiety': data['anxiety'],
+            'peer_pressure': data['peer_pressure'],
+            'chronic disease': data['chronic_disease'],
+            'fatigue': data['fatigue'],
+            'allergy': data['allergy'],
+            'wheezing': data['wheezing'],
+            'alcohol consuming': data['alcohol_consuming'],
+            'coughing': data['coughing'],
+            'shortness of breath': data['shortness_of_breath'],
+            'swallowing difficulty': data['swallowing_difficulty'],
+            'chest pain': data['chest_pain']
+        }
+
+        # Extract features from the renamed data
+        features = [int(renamed_data[key]) for key in renamed_data]
+
+        # Convert the features to a DataFrame
+        columns = list(renamed_data.keys())
+        input_data = pd.DataFrame([features], columns=columns)
+
+        # Make prediction
+        prediction = lungModel.predict(input_data)[0]
+        prediction_label = 'YES' if prediction == 1 else 'NO'
+        print(prediction_label)
+
+        # Return the prediction as JSON
+        return jsonify({'prediction': prediction_label})
+
+    except Exception as e:
+        print("error: " + str(e))
+        return jsonify({'error': str(e)}), 400
+
+@app.route('/lungs', methods=['GET'])
+def lungs():
+    return render_template('lungs.html')
+
+############################################################################
+#SKIN DISEASE
+interpreter = tf.lite.Interpreter(model_path="best_vit_xception.tflite")
+interpreter.allocate_tensors()
+
+# Get input and output details
+input_details = interpreter.get_input_details()
+output_details = interpreter.get_output_details()
+
+# Mapping Indices to Classes
+classes = [
+    "Actinic Keratoses and Intraepithelial Carcinoma / Bowen's Disease",
+    "Basal Cell Carcinoma",
+    "Benign Keratosis-like Lesions",
+    "Dermatofibroma",
+    "Melanoma",
+    "Melanocytic Nevi (Common Mole)",
+    "Vascular Lesions"
+]
+
+def preprocess_image(image_file):
+    img = Image.open(image_file).resize((72, 72))
+    img_array = np.array(img) / 255.0  # Normalize to [0, 1]
+    img_array = np.expand_dims(img_array, axis=0).astype(np.float32)
+    return img_array
+
+@app.route('/predict_skin', methods=['POST'])
+def predict_skin():
+    if 'image' not in request.files:
+        return jsonify({'error': 'No image file provided'}), 400
+
+    image_file = request.files['image']
+    
+    try:
+        input_data = preprocess_image(image_file)
+        
+        # Make predictions
+        interpreter.set_tensor(input_details[0]['index'], input_data)
+        interpreter.invoke()
+        
+        # Get prediction
+        output_data = interpreter.get_tensor(output_details[0]['index'])
+        predicted_index = np.argmax(output_data)
+        predicted_confidence = float(output_data[0][predicted_index])
+        
+        predicted_class = classes[predicted_index]
+        
+        # Get top 3 predictions
+        top_indices = np.argsort(output_data[0])[-3:][::-1]
+        top_predictions = [
+            {'disease': classes[i], 'confidence': float(output_data[0][i])}
+            for i in top_indices
+        ]
+        
+        return jsonify({
+            'disease': predicted_class,
+            'confidence': predicted_confidence,
+            'topPredictions': top_predictions
+        })
+    
+    except Exception as e:
+        app.logger.error(f"Error in predict_skin: {str(e)}", exc_info=True)
+        return jsonify({'error': str(e)}), 500
+
+# Skin disease classification route
+@app.route('/skin_disease', methods=['GET'])
+def skin_disease():
+    return render_template('skin_disease.html')
+
+############################################################################3
+# Eye disease classification route
 
 class ImprovedTinyVGGModel(nn.Module):
     def __init__(self, input_shape, hidden_units, output_shape):
@@ -304,94 +399,9 @@ def predict_eye():
         app.logger.error(f"Error in predict_eye: {str(e)}", exc_info=True)
         return jsonify({'error': str(e)}), 500
 
-@app.route('/predict_diabetes', methods=['POST'])
-def predict_diabetes():
-    try:
-        # Retrieve data from form
-        data = [
-            int(request.form['Age']),
-            int(request.form['Gender']),  # 1 for Male, 0 for Female
-            int(request.form['Polyuria']),
-            int(request.form['Polydipsia']),
-            int(request.form['Sudden_weight_loss']),
-            int(request.form['Weakness']),
-            int(request.form['Polyphagia']),
-            int(request.form['Genital_thrush']),
-            int(request.form['Visual_blurring']),
-            int(request.form['Itching']),
-            int(request.form['Irritability']),
-            int(request.form['Delayed_healing']),
-            int(request.form['Partial_paresis']),
-            int(request.form['Muscle_stiffness']),
-            int(request.form['Alopecia']),
-            int(request.form['Obesity'])
-        ]
-
-        # Convert data to NumPy array
-        custom_case = np.array([data])
-
-        # Make prediction
-        prediction = diabetes_model.predict(custom_case)
-        prediction_label = 'Positive' if prediction[0] == 1 else 'Negative'
-        print(prediction_label)
-
-        # Return result
-        return jsonify({"prediction": prediction_label})
-
-    except Exception as e:
-        return jsonify({"error": str(e)})
-
-@app.route('/diabetes', methods=['GET'])
-def diabetes():
-    return render_template('diabetes.html')
-
-@app.route('/predict_lungs', methods=['POST'])
-def predict_lungs():
-    try:
-        # Get the JSON data from the request
-        data = request.json
-
-        # Map keys to the names expected by the model
-        renamed_data = {
-            'gender': data['gender'],
-            'age': data['age'],
-            'smoking': data['smoking'],
-            'yellow_fingers': data['yellow_fingers'],
-            'anxiety': data['anxiety'],
-            'peer_pressure': data['peer_pressure'],
-            'chronic disease': data['chronic_disease'],
-            'fatigue': data['fatigue'],
-            'allergy': data['allergy'],
-            'wheezing': data['wheezing'],
-            'alcohol consuming': data['alcohol_consuming'],
-            'coughing': data['coughing'],
-            'shortness of breath': data['shortness_of_breath'],
-            'swallowing difficulty': data['swallowing_difficulty'],
-            'chest pain': data['chest_pain']
-        }
-
-        # Extract features from the renamed data
-        features = [int(renamed_data[key]) for key in renamed_data]
-
-        # Convert the features to a DataFrame
-        columns = list(renamed_data.keys())
-        input_data = pd.DataFrame([features], columns=columns)
-
-        # Make prediction
-        prediction = lungModel.predict(input_data)[0]
-        prediction_label = 'YES' if prediction == 1 else 'NO'
-        print(prediction_label)
-
-        # Return the prediction as JSON
-        return jsonify({'prediction': prediction_label})
-
-    except Exception as e:
-        print("error: " + str(e))
-        return jsonify({'error': str(e)}), 400
-
-@app.route('/lungs', methods=['GET'])
-def lungs():
-    return render_template('lungs.html')
+@app.route('/eye_disease', methods=['GET'])
+def eye_disease():
+    return render_template('eye_disease.html')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
